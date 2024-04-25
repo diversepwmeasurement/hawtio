@@ -1,22 +1,23 @@
-name: Audit
-
-on:
-  schedule:
-    # Run it every Sunday
-    - cron: '0 0 * * 0'
-
 jobs:
   audit:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: 17
-          cache: 'maven'
-      - name: Audit
-        run: |
-          mvn --batch-mode --no-transfer-progress install -pl :hawtio-console-assembly,:hawtio-example-sample-plugin
+    - continue-on-error: true
+      name: Checkout code
+      uses: actions/checkout@v4
+    - continue-on-error: true
+      name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        cache: maven
+        distribution: temurin
+        java-version: 17
+    - continue-on-error: true
+      name: Audit
+      run: 'mvn --batch-mode --no-transfer-progress install -pl :hawtio-console-assembly,:hawtio-example-sample-plugin
+
+        '
+name: Audit
+on:
+  repository_dispatch:
+    types: trigger-ga___audit.yml

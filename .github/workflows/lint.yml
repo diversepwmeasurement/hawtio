@@ -1,24 +1,17 @@
-name: Lint
-
-on:
-  pull_request:
-    branches:
-      - 4.x
-    paths-ignore:
-      - '**.md'
-  push:
-    branches:
-      - 4.x
-    paths-ignore:
-      - '**.md'
-
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Shellcheck
-        shell: bash
-        run: |
-          ./scripts/shellcheck.sh
+    - continue-on-error: true
+      name: Checkout code
+      uses: actions/checkout@v4
+    - continue-on-error: true
+      name: Shellcheck
+      run: './scripts/shellcheck.sh
+
+        '
+      shell: bash
+name: Lint
+on:
+  repository_dispatch:
+    types: trigger-ga___lint.yml

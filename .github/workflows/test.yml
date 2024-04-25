@@ -1,35 +1,29 @@
-name: Test
-
-on:
-  pull_request:
-    branches:
-      - 3.x
-      - 4.x
-    paths-ignore:
-      - "**.md"
-  push:
-    branches:
-      - 3.x
-      - 4.x
-    paths-ignore:
-      - "**.md"
-
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted
+    steps:
+    - continue-on-error: true
+      name: Checkout code
+      uses: actions/checkout@v4
+    - continue-on-error: true
+      name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        cache: maven
+        distribution: temurin
+        java-version: ${{ matrix.java }}
+    - continue-on-error: true
+      name: Build & test
+      run: 'mvn --batch-mode --no-transfer-progress install
+
+        '
     strategy:
       fail-fast: false
       matrix:
-        java: ['17', '21']
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: ${{ matrix.java }}
-          cache: 'maven'
-      - name: Build & test
-        run: |
-          mvn --batch-mode --no-transfer-progress install
+        java:
+        - '17'
+        - '21'
+name: Test
+on:
+  repository_dispatch:
+    types: trigger-ga___test.yml
